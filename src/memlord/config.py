@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     # Reciprocal Rank Fusion constant. Lower k → steeper rank gaps (default 20).
     rrf_k: int = Field(20, ge=1)
     default_limit: int = 10
+    # Minimum per-leg candidate pool for hybrid search, so small `limit` values
+    # don't shrink the pool (pool = max(limit*4, this)) and change ranking.
+    candidate_pool_min: int = Field(50, ge=1)
     sim_threshold: float = Field(0.25, ge=0.0, le=1.0)
     dedup_threshold: float = Field(0.85, ge=0.0, le=1.0)
     # Hybrid fusion weights. When remote embeddings drive vector search,

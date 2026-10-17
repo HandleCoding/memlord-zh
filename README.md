@@ -170,6 +170,7 @@ adds a small title boost. All knobs are `MEMLORD_*` env vars (see `.env.example`
 | Knob | Default | Notes |
 |------|---------|-------|
 | `MEMLORD_RRF_K` | `20` | Lower → steeper rank gaps. `20` is a solid default for personal and mid-size stores; raise toward `40–60` if a very large corpus produces too many near-ties. |
+| `MEMLORD_CANDIDATE_POOL_MIN` | `50` | Minimum candidates per search leg (pool = `max(limit×4, this)`). Keeps ranking stable for small `limit` values; fused results are truncated to `limit` afterwards. |
 | `MEMLORD_FUSION_W_VEC` | `1.0` | Weight on the vector leg. |
 | `MEMLORD_FUSION_W_FTS_LOCAL` | `1.0` | FTS weight when using the local 384-d vectors. |
 | `MEMLORD_FUSION_W_FTS_REMOTE` | `0.5` | FTS weight when remote embeddings drive vector search (reduces keyword dilution of strong semantic hits). Raise toward `1.0` if exact keyword/title recall matters more than paraphrase. |

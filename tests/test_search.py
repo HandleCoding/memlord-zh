@@ -163,3 +163,24 @@ def test_dateparser_today_truncates_before_now():
     truncated = found[0][1].replace(hour=0, minute=0, second=0, microsecond=0)
     assert truncated <= datetime.now()
     assert truncated.hour == 0 and truncated.minute == 0 and truncated.second == 0
+
+
+async def test_limit_does_not_change_ranking(session, user_id, workspace_id):
+    """Top-k must be a prefix of top-10 regardless of limit (candidate pool floor)."""
+    for i in range(30):
+        await _store(session, f"alpha note number {i} about topic {i % 5}", user_id, workspace_id)
+
+    async def run(limit: int) -> list[int]:
+        res = await hybrid_search(
+            session,
+            "alpha topic",
+            workspace_ids=[workspace_id],
+            limit=limit,
+            similarity_threshold=0.0,
+        )
+        return [r.id for r in res]
+
+    full = await run(10)
+    assert len(full) == 10
+    for k in range(1, 11):
+        assert await run(k) == full[:k]

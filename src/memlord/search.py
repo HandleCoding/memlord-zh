@@ -132,7 +132,8 @@ async def hybrid_search(
     date_to: datetime | None = None,
     memory_type: str | None = None,
 ) -> list[SearchResult]:
-    n = (limit or settings.default_limit) * 4
+    req = limit or settings.default_limit
+    n = max(req * 4, settings.candidate_pool_min)
     k = settings.rrf_k
     threshold = similarity_threshold if similarity_threshold is not None else settings.sim_threshold
 
@@ -339,4 +340,4 @@ async def hybrid_search(
         )
 
     scored.sort(key=lambda r: r.rrf_score, reverse=True)
-    return scored[: limit or settings.default_limit]
+    return scored[:req]
